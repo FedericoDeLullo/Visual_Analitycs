@@ -1,0 +1,64 @@
+{
+  "$schema":"https://vega.github.io/schema/vega-lite/v5.json",
+  "width":900,
+  "height":420,
+  "data":{"values":[
+    {"esame":"Fondamenti di Informatica","data":"2022-02-15","voto":"28","cfu":6},
+    {"esame":"Analisi Matematica 1","data":"2022-03-10","voto":"19","cfu":9},
+    {"esame":"Fisica 1","data":"2022-05-05","voto":"27","cfu":8},
+    {"esame":"Programmazione 1","data":"2022-07-01","voto":"25","cfu":9},
+    {"esame":"Architettura degli Elaboratori","data":"2022-09-12","voto":"26","cfu":6},
+    {"esame":"Basi di Dati","data":"2022-11-20","voto":"30L","cfu":6},
+    {"esame":"Sistemi Operativi","data":"2023-01-18","voto":"26","cfu":8},
+    {"esame":"Reti di Calcolatori","data":"2023-03-07","voto":"28","cfu":6},
+    {"esame":"Fondamenti di Automatica 1","data":"2023-05-15","voto":"22","cfu":8},
+    {"esame":"Ingegneria del Software","data":"2023-07-30","voto":"29","cfu":6},
+    {"esame":"Programmazione 2","data":"2023-09-25","voto":"27","cfu":9},
+    {"esame":"Algoritmi e Strutture Dati","data":"2023-11-10","voto":"30L","cfu":9},
+    {"esame":"Calcolo Numerico","data":"2024-01-22","voto":"24","cfu":6},
+    {"esame":"Laboratorio di Informatica","data":"2024-03-18","voto":"30","cfu":6},
+    {"esame":"Linguaggi e Compilatori","data":"2024-05-14","voto":"28","cfu":8},
+    {"esame":"Fondamenti di Automatica 2","data":"2024-07-09","voto":"27","cfu":6},
+    {"esame":"Fisica 2","data":"2024-09-20","voto":"24","cfu":6},
+    {"esame":"Analisi Matematica 2","data":"2024-11-05","voto":"18","cfu":9},
+    {"esame":"Sistemi Distribuiti","data":"2025-01-12","voto":"20","cfu":6}
+  ]},
+  "transform":[
+    {"calculate":"indexof(toString(datum.voto),'L')>=0 ? 30 : toNumber(toString(datum.voto))","as":"grade"},
+    {"calculate":"indexof(toString(datum.voto),'L')>=0","as":"honors"},
+    {"calculate":"toNumber(datum.cfu)","as":"cfu_n"}
+  ],
+  "title":{"text":"Federico's Temporal Trend","subtitle":"Points sized by CFU; orange = 30L","anchor":"start"},
+  "layer":[
+    {
+      "mark":{"type":"line","interpolate":"linear","strokeWidth":3,"color":"#247291"},
+      "encoding":{
+        "x":{
+          "field":"data",
+          "type":"temporal",
+          "title":"Exam Date",
+          "axis":{"labelAngle":-40,"format":"%Y-%m-%d","tickCount":19}
+        },
+        "y":{"field":"grade","type":"quantitative","title":"Grade","scale":{"domain":[18,30]}}
+      }
+    },
+    {
+      "mark":{"type":"point","filled":true,"stroke":"white","strokeWidth":1.5},
+      "encoding":{
+        "x":{"field":"data","type":"temporal"},
+        "y":{"field":"grade","type":"quantitative"},
+        "size":{"field":"cfu_n","type":"quantitative","scale":{"range":[60,220]},"title":"CFU"},
+        "color":{"field":"honors","type":"nominal","scale":{"domain":[false,true],"range":["#4C78A8","#FF6F00"]},"title":"30L"},
+        "tooltip":[
+          {"field":"esame","type":"nominal","title":"Esame"},
+          {"field":"data","type":"temporal","title":"Data","format":"%Y-%m-%d"},
+          {"field":"grade","type":"quantitative","title":"Voto normalizzato"},
+          {"field":"voto","type":"nominal","title":"Valore originale"},
+          {"field":"cfu_n","type":"quantitative","title":"CFU"},
+          {"field":"honors","type":"nominal","title":"30L"}
+        ]
+      }
+    }
+  ],
+  "config":{"axis":{"labelFontSize":12,"titleFontSize":13},"title":{"fontSize":16},"legend":{"labelFontSize":12}}
+}

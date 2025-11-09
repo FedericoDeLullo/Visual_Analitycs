@@ -1,0 +1,50 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "width": 900,
+  "height": 420,
+  "data": {
+    "values": [
+      {"esame":"Fondamenti di Informatica","data":"2022-02-15","Federico":"28","Alice":"27","Marco":"29","Sara":"30","cfu":6},
+      {"esame":"Analisi Matematica 1","data":"2022-03-10","Federico":"19","Alice":"24","Marco":"26","Sara":"25","cfu":9},
+      {"esame":"Fisica 1","data":"2022-05-05","Federico":"27","Alice":"30","Marco":"24","Sara":"28","cfu":8},
+      {"esame":"Programmazione 1","data":"2022-07-01","Federico":"25","Alice":"29","Marco":"30L","Sara":"28","cfu":9},
+      {"esame":"Architettura degli Elaboratori","data":"2022-09-12","Federico":"26","Alice":"28","Marco":"29","Sara":"27","cfu":6},
+      {"esame":"Basi di Dati","data":"2022-11-20","Federico":"30L","Alice":"18","Marco":"25","Sara":"28","cfu":6},
+      {"esame":"Sistemi Operativi","data":"2023-01-18","Federico":"26","Alice":"27","Marco":"25","Sara":"28","cfu":8},
+      {"esame":"Reti di Calcolatori","data":"2023-03-07","Federico":"28","Alice":"30L","Marco":"24","Sara":"29","cfu":6},
+      {"esame":"Fondamenti di Automatica 1","data":"2023-05-15","Federico":"22","Alice":"29","Marco":"30","Sara":"25","cfu":8},
+      {"esame":"Ingegneria del Software","data":"2023-07-30","Federico":"29","Alice":"28","Marco":"27","Sara":"22","cfu":6},
+      {"esame":"Programmazione 2","data":"2023-09-25","Federico":"27","Alice":"26","Marco":"30","Sara":"28","cfu":9},
+      {"esame":"Algoritmi e Strutture Dati","data":"2023-11-10","Federico":"30L","Alice":"26","Marco":"24","Sara":"28","cfu":9},
+      {"esame":"Calcolo Numerico","data":"2024-01-22","Federico":"24","Alice":"30","Marco":"27","Sara":"26","cfu":6},
+      {"esame":"Laboratorio di Informatica","data":"2024-03-18","Federico":"30","Alice":"27","Marco":"26","Sara":"25","cfu":6},
+      {"esame":"Linguaggi e Compilatori","data":"2024-05-14","Federico":"28","Alice":"27","Marco":"29","Sara":"30","cfu":8},
+      {"esame":"Fondamenti di Automatica 2","data":"2024-07-09","Federico":"27","Alice":"28","Marco":"26","Sara":"22","cfu":6},
+      {"esame":"Fisica 2","data":"2024-09-20","Federico":"24","Alice":"26","Marco":"29","Sara":"30","cfu":6},
+      {"esame":"Analisi Matematica 2","data":"2024-11-05","Federico":"18","Alice":"25","Marco":"24","Sara":"30L","cfu":9},
+      {"esame":"Sistemi Distribuiti","data":"2025-01-12","Federico":"20","Alice":"28","Marco":"27","Sara":"29","cfu":6}
+    ]
+  },
+  "transform": [
+    {
+      "fold": ["Federico","Alice","Marco","Sara"],
+      "as": ["studente","voto"]
+    },
+    {
+      "calculate":"indexof(toString(datum.voto),'L')>=0 ? 30 : toNumber(datum.voto)",
+      "as":"grade"
+    }
+  ],
+  "title": {
+    "text":"Distribution of grades per student (4 students)",
+    "anchor":"start"
+  },
+  "mark": {"type":"boxplot","extent":"min-max","orient":"vertical","size":48},
+  "encoding": {
+    "x":{"field":"studente","type":"nominal","title":"Student","axis":{"labelAngle":0,"labelFontSize":13}},
+    "y":{"field":"grade","type":"quantitative","title":"Grade","scale":{"domain":[16,31]},"axis":{"labelFontSize":13}},
+    "color":{"field":"studente","type":"nominal","legend":null,"scale":{"range":["#1B3B6F","#f9a828","#008B45","#D62728"]}},
+    "tooltip":[{"field":"studente","type":"nominal","title":"Studente"},{"field":"grade","type":"quantitative","title":"Voto"}]
+  },
+  "config":{"axis":{"labelFontSize":12,"titleFontSize":14},"title":{"fontSize":16}}
+}
