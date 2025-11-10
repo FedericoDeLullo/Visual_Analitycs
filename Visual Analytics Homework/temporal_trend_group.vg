@@ -1,10 +1,10 @@
 {
-  "$schema":"https://vega.github.io/schema/vega-lite/v5.json",
-  "width":950,
-  "height":480,
-  "description":"Andamento temporale dei voti di Federico, Alice, Marco e Sara",
-  "data":{
-    "values":[
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "width": 950,
+  "height": 480,
+  "description": "Comparison between Federico's grades and the group's average (Alice, Marco, Sara)",
+  "data": {
+    "values": [
       {"esame":"Fondamenti di Informatica","data":"2022-02-15","Federico":"28","Alice":"27","Marco":"29","Sara":"30","cfu":6},
       {"esame":"Analisi Matematica 1","data":"2022-03-10","Federico":"19","Alice":"24","Marco":"26","Sara":"25","cfu":9},
       {"esame":"Fisica 1","data":"2022-05-05","Federico":"27","Alice":"30","Marco":"24","Sara":"28","cfu":8},
@@ -26,57 +26,66 @@
       {"esame":"Sistemi Distribuiti","data":"2025-01-12","Federico":"20","Alice":"28","Marco":"27","Sara":"29","cfu":6}
     ]
   },
-  "transform":[
-    {"fold":["Federico","Alice","Marco","Sara"],"as":["studente","voto"]},
-    {"calculate":"indexof(toString(datum.voto),'L')>=0 ? 30 : toNumber(datum.voto)","as":"grade"},
-    {"calculate":"indexof(toString(datum.voto),'L')>=0","as":"honors"},
-    {"calculate":"toNumber(datum.cfu)","as":"cfu_n"}
+  "transform": [
+    {"fold": ["Federico", "Alice", "Marco", "Sara"], "as": ["studente", "voto"]},
+    {"calculate": "indexof(toString(datum.voto),'L')>=0 ? 30 : toNumber(datum.voto)", "as": "grade"}
   ],
-  "title":{"text":"Group's Temporal Trend (4 students)","anchor":"start"},
-  "layer":[
+  "title": {"text": "Federico vs Group Average (Alice, Marco, Sara)", "anchor": "start"},
+
+  "encoding": {
+    "color": {
+      "scale": {
+        "domain": ["Federico", "Group Average (A, M, S)"],
+        "range": ["#f9a828", "#1B3B6F"]
+      }
+    },
+    "strokeDash": {      "scale": {
+        "domain": ["Federico", "Group Average (A, M, S)"],
+        "range": [[1, 0], [5, 5]]
+      }
+    }
+  },
+
+  "layer": [
     {
-      "mark":{"type":"line","interpolate":"linear","strokeWidth":3,"opacity":0.85},
-      "encoding":{
-        "x":{"field":"data","type":"temporal","title":"Exam Date","axis":{"format":"%Y-%m-%d","labelAngle":-40}},
-        "y":{"field":"grade","type":"quantitative","title":"Grade"},
-        "color":{
-          "field":"studente",
-          "type":"nominal",
-          "title":"Student",
-          "scale":{
-            "domain":["Federico","Alice","Marco","Sara"],
-            "range":["#f9a828","#1B3B6F","#D62728","#008B45"]
-          }
-        },
-        "detail":{"field":"studente"}
+      "transform": [{"filter": "datum.studente == 'Federico'"}],
+      "mark": {"type": "line", "strokeWidth": 3},
+      "encoding": {
+        "x": {"field": "data", "type": "temporal", "title": "Exam Date", "axis": {"format": "%Y-%m-%d", "labelAngle": -40}},
+        "y": {"field": "grade", "type": "quantitative", "title": "Grade"},
+        "color": {"datum": "Federico"},
+        "strokeDash": {"datum": "Federico"},
+        "tooltip": [
+          {"field": "data", "type": "temporal", "title": "Date"},
+          {"field": "grade", "type": "quantitative", "title": "Federico"}
+        ]
       }
     },
     {
-      "mark":{"type":"point","filled":true,"stroke":"white","strokeWidth":1.5},
-      "encoding":{
-        "x":{"field":"data","type":"temporal"},
-        "y":{"field":"grade","type":"quantitative"},
-        "color":{
-          "field":"studente",
-          "type":"nominal",
-          "scale":{
-            "domain":["Federico","Alice","Marco","Sara"],
-            "range":["#f9a828","#1B3B6F","#D62728","#008B45"]
-          },
-          "legend":{"title":"Student"}
-        },
-        "size":{"field":"cfu_n","type":"quantitative","scale":{"range":[40,200]},"title":"CFU"},
-        "shape":{"field":"honors","type":"nominal","scale":{"domain":[false,true],"range":["circle","triangle"]},"title":"30L"},
-        "tooltip":[
-          {"field":"studente","type":"nominal","title":"Studente"},
-          {"field":"esame","type":"nominal","title":"Exam"},
-          {"field":"data","type":"temporal","title":"Date","format":"%Y-%m-%d"},
-          {"field":"voto","type":"nominal","title":"Original Grade"},
-          {"field":"grade","type":"quantitative","title":"Normalized Grade"},
-          {"field":"cfu_n","type":"quantitative","title":"CFU"}
+      "transform": [
+        {"filter": "datum.studente != 'Federico'"},
+        {"aggregate": [{"op": "mean", "field": "grade", "as": "group_avg"}], "groupby": ["data"]}
+      ],
+      "mark": {"type": "line", "strokeWidth": 3},
+      "encoding": {
+        "x": {"field": "data", "type": "temporal"},
+        "y": {"field": "group_avg", "type": "quantitative"},
+        "color": {"datum": "Group Average (A, M, S)"},
+        "strokeDash": {"datum": "Group Average (A, M, S)"},
+        "tooltip": [
+          {"field": "data", "type": "temporal", "title": "Date"},
+          {"field": "group_avg", "type": "quantitative", "title": "Group Average (no Federico)", "format": ".2f"}
         ]
       }
     }
   ],
-  "config":{"axis":{"labelFontSize":12,"titleFontSize":13},"title":{"fontSize":16},"legend":{"labelFontSize":12}}
+  "config": {
+    "axis": {"labelFontSize": 12, "titleFontSize": 13},
+    "title": {"fontSize": 16},
+    "legend": {
+      "orient": "right",
+      "titleFontSize": 13,
+      "labelFontSize": 12
+    }
+  }
 }
