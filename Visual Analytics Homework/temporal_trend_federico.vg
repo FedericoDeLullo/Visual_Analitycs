@@ -33,25 +33,20 @@
     {
       "mark":{"type":"line","interpolate":"linear","strokeWidth":3,"color":"#247291"},
       "encoding":{
-        "x":{
-          "field":"data",
-          "type":"temporal",
-          "title":"Exam Date",
-          "axis":{"labelAngle":-40,"format":"%Y-%m-%d","tickCount":19}
-        },
-        "y":{"field":"grade","type":"quantitative","title":"Grade","scale":{"domain":[18,30]}}
+        "x":{"field":"data","type":"ordinal","title":"Exam Date","axis":{"labelAngle":-40}},
+        "y":{"field":"grade","type":"quantitative","title":"Grade","scale":{"domain":[17,30]}}
       }
     },
     {
       "mark":{"type":"point","filled":true,"stroke":"white","strokeWidth":1.5},
       "encoding":{
-        "x":{"field":"data","type":"temporal"},
+        "x":{"field":"data","type":"ordinal"},
         "y":{"field":"grade","type":"quantitative"},
-        "size":{"field":"cfu_n","type":"quantitative","scale":{"range":[60,220]},"title":"CFU"},
+        "size":{"field":"cfu_n","type":"ordinal","scale":{"domain":[6,8,9],"range":[100,180,260]},"title":"CFU"},
         "color":{"field":"honors","type":"nominal","scale":{"domain":[false,true],"range":["#4C78A8","#FF6F00"]},"title":"30L"},
         "tooltip":[
           {"field":"esame","type":"nominal","title":"Esame"},
-          {"field":"data","type":"temporal","title":"Data","format":"%Y-%m-%d"},
+          {"field":"data","type":"ordinal","title":"Data"},
           {"field":"grade","type":"quantitative","title":"Voto normalizzato"},
           {"field":"voto","type":"nominal","title":"Valore originale"},
           {"field":"cfu_n","type":"quantitative","title":"CFU"},

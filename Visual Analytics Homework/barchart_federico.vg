@@ -23,24 +23,44 @@
       {"esame":"Fondamenti di Automatica 2","data":"2024-07-09","voto":"27","cfu":6},
       {"esame":"Fisica 2","data":"2024-09-20","voto":"24","cfu":6},
       {"esame":"Analisi Matematica 2","data":"2024-11-05","voto":"18","cfu":9},
-      {"esame":"Sistemi Distribuiti","data":"2025-01-12","voto":"20","cfu":6}    ]
+      {"esame":"Sistemi Distribuiti","data":"2025-01-12","voto":"20","cfu":6}
+    ]
   },
   "transform": [
     {"calculate": "indexof(toString(datum.voto),'L') >= 0 ? 30 : toNumber(toString(datum.voto))","as":"voto_num"},
     {"calculate": "indexof(toString(datum.voto),'L') >= 0 ? '30L' : toString(datum.voto)","as":"voto_display"}
   ],
-  "title": {"text":"Federico's grades","subtitle":"30L highlighted.","anchor":"start"},
-  "mark": {"type":"bar","cornerRadiusTopLeft":6,"cornerRadiusTopRight":6},
-  "encoding": {
-    "x":{"field":"esame","type":"ordinal","sort":{"field":"data","op":"min"},"axis":{"labelAngle":-40,"labelFontSize":13,"title":"Exam"}},
-    "y":{"field":"voto_num","type":"quantitative","axis":{"title":"Grade","labelFontSize":13}},
-    "color":{"condition":{"test":"datum.voto_display==='30L'","value":"#f8da5b"},"value":"#247291"},
-    "tooltip":[
-      {"field":"esame","type":"nominal","title":"Esame"},
-      {"field":"data","type":"temporal","title":"Data","format":"%Y-%m-%d"},
-      {"field":"voto_display","type":"nominal","title":"Voto"},
-      {"field":"cfu","type":"quantitative","title":"CFU"}
-    ]
-  },
+  "title": {"text":"Federico's grades (Exams Sorted Chronologically) ","subtitle":"30L highlighted.","anchor":"start"},
+  "layer": [
+    {
+      "mark":{"type":"bar","cornerRadiusTopLeft":6,"cornerRadiusTopRight":6},
+      "encoding": {
+        "x":{"field":"esame","type":"ordinal","sort":{"field":"data","op":"min"},"axis":{"labelAngle":-40,"labelFontSize":13,"title":"Exam"}},
+        "y":{"field":"voto_num","type":"quantitative","axis":{"title":"Grade","labelFontSize":13}},
+        "color":{"condition":{"test":"datum.voto_display==='30L'","value":"#f8da5b"},"value":"#247291"},
+        "tooltip":[
+          {"field":"esame","type":"nominal","title":"Esame"},
+          {"field":"data","type":"temporal","title":"Data","format":"%Y-%m-%d"},
+          {"field":"voto_display","type":"nominal","title":"Voto"},
+          {"field":"cfu","type":"quantitative","title":"CFU"}
+        ]
+      }
+    },
+    {
+      "mark":{"type":"rule","color":"black"  ,"strokeWidth":2,"strokeDash":[4,4]},
+      "encoding": {
+        "y":{"value":168},
+        "tooltip":[{"value":"Passing grade = 18","title":"Minimum grade"}]
+      }
+    },
+    {
+      "mark":{"type":"text","align":"left","baseline":"middle","dx":5,"dy":0,"color":"black","fontWeight":"normal","fontSize":12},
+      "encoding": {
+        "y":{"value":168},
+        "x":{"value":-110},
+        "text":{"value":"Minimum grade"}
+      }
+    }
+  ],
   "config":{"axis":{"labelFontSize":12,"titleFontSize":14},"title":{"fontSize":16},"legend":{"labelFontSize":12}}
 }

@@ -1,0 +1,123 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "width": 950,
+  "height": 500,
+  "description": "Bubble chart elegante dei voti di Federico con media, CFU e 30L evidenziati",
+  "data": {
+    "values": [
+      {"esame":"Fondamenti di Informatica","data":"2022-02-15","voto":"28","cfu":6},
+      {"esame":"Analisi Matematica 1","data":"2022-03-10","voto":"19","cfu":9},
+      {"esame":"Fisica 1","data":"2022-05-05","voto":"27","cfu":8},
+      {"esame":"Programmazione 1","data":"2022-07-01","voto":"25","cfu":9},
+      {"esame":"Architettura degli Elaboratori","data":"2022-09-12","voto":"26","cfu":6},
+      {"esame":"Basi di Dati","data":"2022-11-20","voto":"30L","cfu":6},
+      {"esame":"Sistemi Operativi","data":"2023-01-18","voto":"26","cfu":8},
+      {"esame":"Reti di Calcolatori","data":"2023-03-07","voto":"28","cfu":6},
+      {"esame":"Fondamenti di Automatica 1","data":"2023-05-15","voto":"22","cfu":8},
+      {"esame":"Ingegneria del Software","data":"2023-07-30","voto":"29","cfu":6},
+      {"esame":"Programmazione 2","data":"2023-09-25","voto":"27","cfu":9},
+      {"esame":"Algoritmi e Strutture Dati","data":"2023-11-10","voto":"30L","cfu":9},
+      {"esame":"Calcolo Numerico","data":"2024-01-22","voto":"24","cfu":6},
+      {"esame":"Laboratorio di Informatica","data":"2024-03-18","voto":"30","cfu":6},
+      {"esame":"Linguaggi e Compilatori","data":"2024-05-14","voto":"28","cfu":8},
+      {"esame":"Fondamenti di Automatica 2","data":"2024-07-09","voto":"27","cfu":6},
+      {"esame":"Fisica 2","data":"2024-09-20","voto":"24","cfu":6},
+      {"esame":"Analisi Matematica 2","data":"2024-11-05","voto":"18","cfu":9},
+      {"esame":"Sistemi Distribuiti","data":"2025-01-12","voto":"20","cfu":6}
+    ]
+  },
+  "transform": [
+    {
+      "calculate": "indexof(toString(datum.voto),'L')>=0 ? 30 : toNumber(datum.voto)",
+      "as": "grade"
+    },
+    {
+      "calculate": "indexof(toString(datum.voto),'L')>=0 ? 'triangle' : 'circle'",
+      "as": "shape_symbol"
+    },
+    {
+      "joinaggregate": [{"op": "mean", "field": "grade", "as": "mean_grade"}]
+    },
+    {
+      "calculate": "datum.grade >= datum.mean_grade ? 'above' : 'below'",
+      "as": "above_below"
+    },
+    {
+      "calculate": "indexof(toString(datum.voto),'L')>=0 ? 'lode' : datum.above_below",
+      "as": "color_category"
+    },
+    {
+      "calculate": "datum.color_category == 'lode' ? 'triangle' : datum.shape_symbol",
+      "as": "final_shape"
+    },
+    {
+      "calculate": "datum.color_category == 'lode' ? 'above' : datum.color_category",
+      "as": "final_color_category"
+    }
+  ],
+  "layer": [
+    {
+      "mark": {"type": "point", "filled": true},
+      "encoding": {
+        "x": {
+          "field": "data",
+          "type": "ordinal",
+          "title": "Exam Date",
+          "axis": {"labelAngle": -40}
+        },
+        "y": {
+          "field": "grade",
+          "type": "quantitative",
+          "title": "Grade",
+          "scale": {"domain": [17, 31]}
+        },
+        "size": {
+          "field": "cfu",
+          "type": "ordinal",
+          "scale": {"domain": [6, 8, 9], "range": [1000, 2000, 3000]},
+          "title": "CFU"
+        },
+        "shape": {"field": "final_shape", "type": "nominal", "legend": null},
+        "color": {
+          "field": "final_color_category",
+          "type": "nominal",
+          "scale": {
+            "domain": ["above", "below"],
+            "range": ["#1b9e77", "#d95f02"]
+          },
+          "title": "Above/Below Mean"
+        },
+        "tooltip": [
+          {"field": "esame", "type": "nominal", "title": "Esame"},
+          {"field": "data", "type": "ordinal", "title": "Data"},
+          {"field": "grade", "type": "quantitative", "title": "Voto"},
+          {"field": "cfu", "type": "ordinal", "title": "CFU"},
+          {"field": "color_category", "type": "nominal", "title": "Categoria"}
+        ]
+      }
+    },
+    {
+      "mark": {"type": "rule", "strokeWidth": 2, "color": "black", "strokeDash": [4,4]},
+      "encoding": {
+        "y": {"field": "mean_grade", "type": "quantitative"},
+        "color": {
+          "value": "black",
+          "legend": {"title": "Mean Grade"}
+        },
+        "tooltip": [
+          {"field": "mean_grade", "type": "quantitative", "title": "Mean Grade"}
+        ]
+      }
+    }
+  ],
+  "title": {
+    "text": "Bubble Chart for Federico's Grades (30L are Square)",
+    "subtitle": "The dashed line represents the mean grade",
+    "anchor": "start"
+  },
+  "config": {
+    "axis": {"labelFontSize": 12, "titleFontSize": 13},
+    "title": {"fontSize": 16},
+    "legend": {"orient": "right", "titleFontSize": 13, "labelFontSize": 12}
+  }
+}

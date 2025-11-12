@@ -39,7 +39,8 @@
         "range": ["#f9a828", "#1B3B6F"]
       }
     },
-    "strokeDash": {      "scale": {
+    "strokeDash": {
+      "scale": {
         "domain": ["Federico", "Group Average (A, M, S)"],
         "range": [[1, 0], [5, 5]]
       }
@@ -51,12 +52,12 @@
       "transform": [{"filter": "datum.studente == 'Federico'"}],
       "mark": {"type": "line", "strokeWidth": 3},
       "encoding": {
-        "x": {"field": "data", "type": "temporal", "title": "Exam Date", "axis": {"format": "%Y-%m-%d", "labelAngle": -40}},
-        "y": {"field": "grade", "type": "quantitative", "title": "Grade"},
+        "x": {"field": "data", "type": "ordinal", "title": "Exam Date", "axis": {"labelAngle": -40}},
+        "y": {"field": "grade", "type": "quantitative", "title": "Grade", "scale": {"domain": [17, 31]}},
         "color": {"datum": "Federico"},
         "strokeDash": {"datum": "Federico"},
         "tooltip": [
-          {"field": "data", "type": "temporal", "title": "Date"},
+          {"field": "data", "type": "ordinal", "title": "Date"},
           {"field": "grade", "type": "quantitative", "title": "Federico"}
         ]
       }
@@ -68,17 +69,18 @@
       ],
       "mark": {"type": "line", "strokeWidth": 3},
       "encoding": {
-        "x": {"field": "data", "type": "temporal"},
+        "x": {"field": "data", "type": "ordinal"},
         "y": {"field": "group_avg", "type": "quantitative"},
         "color": {"datum": "Group Average (A, M, S)"},
         "strokeDash": {"datum": "Group Average (A, M, S)"},
         "tooltip": [
-          {"field": "data", "type": "temporal", "title": "Date"},
+          {"field": "data", "type": "ordinal", "title": "Date"},
           {"field": "group_avg", "type": "quantitative", "title": "Group Average (no Federico)", "format": ".2f"}
         ]
       }
     }
   ],
+
   "config": {
     "axis": {"labelFontSize": 12, "titleFontSize": 13},
     "title": {"fontSize": 16},
