@@ -30,7 +30,11 @@
     {"calculate": "indexof(toString(datum.voto),'L') >= 0 ? 30 : toNumber(toString(datum.voto))","as":"voto_num"},
     {"calculate": "indexof(toString(datum.voto),'L') >= 0 ? '30L' : toString(datum.voto)","as":"voto_display"}
   ],
-  "title": {"text":"Federico's grades (Exams Sorted Chronologically) ","subtitle":"30L highlighted.","anchor":"start"},
+  "title": {
+    "text":"Federico's grades (Exams Sorted Chronologically)",
+    "subtitle":"30L highlighted.",
+    "anchor":"start"
+  },
   "layer": [
     {
       "mark":{"type":"bar","cornerRadiusTopLeft":6,"cornerRadiusTopRight":6},
@@ -47,20 +51,24 @@
       }
     },
     {
-      "mark":{"type":"rule","color":"black"  ,"strokeWidth":2,"strokeDash":[4,4]},
+      "mark":{"type":"rule","color":"black","strokeWidth":2,"strokeDash":[4,4]},
       "encoding": {
         "y":{"value":168},
         "tooltip":[{"value":"Passing grade = 18","title":"Minimum grade"}]
       }
     },
     {
-      "mark":{"type":"text","align":"left","baseline":"middle","dx":5,"dy":0,"color":"black","fontWeight":"normal","fontSize":12},
+      "mark":{"type":"text","font":"Helvetica","align":"left","baseline":"middle","dx":5,"dy":0,"color":"black","fontWeight":"bold","fontSize":16},
       "encoding": {
         "y":{"value":168},
-        "x":{"value":-110},
+        "x":{"value":-150},
         "text":{"value":"Minimum grade"}
       }
     }
   ],
-  "config":{"axis":{"labelFontSize":12,"titleFontSize":14},"title":{"fontSize":16},"legend":{"labelFontSize":12}}
+  "config":{
+    "axis":{"labelFontSize":12,"titleFontSize":14},
+    "title":{"fontSize":16},
+    "legend":{"labelFontSize":12}
+  }
 }
