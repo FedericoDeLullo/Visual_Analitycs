@@ -1,0 +1,94 @@
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+
+body {
+    min-height: 100vh;
+    background-color: #f0f2f5;
+    color: #1e293b;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Blocchiamo lo scroll del body, scrollano solo i riquadri! */
+}
+
+/* --- TOP BAR --- */
+#top-bar {
+    height: 70px;
+    background-color: #1e293b; 
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 30px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    z-index: 10;
+}
+.title { font-size: 1.4rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+.controls { display: flex; gap: 12px; }
+.controls button {
+    padding: 8px 16px; border: 1px solid #475569; border-radius: 6px;
+    background-color: #334155; color: white; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.2s;
+}
+.controls button:hover { background-color: #475569; }
+.controls button.active { background-color: #10b981; border-color: #10b981; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4); }
+.controls button.btn-danger { background-color: transparent; border-color: #ef4444; color: #ef4444; }
+.controls button.btn-danger:hover { background-color: #ef4444; color: white; }
+
+/* --- APP CONTAINER (Sidebar + Dashboard) --- */
+#app-container {
+    display: flex;
+    flex-grow: 1;
+    height: calc(100vh - 70px);
+}
+
+/* --- SIDEBAR FILTRI --- */
+#sidebar {
+    width: 280px;
+    background-color: #ffffff;
+    border-right: 1px solid #e2e8f0;
+    padding: 20px;
+    overflow-y: auto;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.02);
+}
+.sidebar-title { font-size: 1.1rem; color: #0f172a; margin-bottom: 20px; border-bottom: 2px solid #10b981; padding-bottom: 10px; }
+.filter-group { margin-bottom: 20px; }
+.filter-group label { display: block; font-size: 0.85rem; font-weight: 600; color: #475569; margin-bottom: 8px; }
+.filter-input { width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.9rem; }
+.filter-input:focus { outline: none; border-color: #3b82f6; }
+.min-max-inputs { display: flex; gap: 10px; }
+.btn-apply {
+    width: 100%; padding: 10px; background-color: #3b82f6; color: white; border: none; border-radius: 6px;
+    font-weight: 600; cursor: pointer; transition: 0.2s; margin-top: 10px;
+}
+.btn-apply:hover { background-color: #2563eb; }
+
+/* --- GRIGLIA DASHBOARD --- */
+#dashboard {
+    flex-grow: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 250px; /* Altezze bilanciate */
+    gap: 15px;
+    padding: 15px;
+    overflow-y: auto; /* Permette alla griglia di scorrere verso il basso */
+}
+.view-container {
+    background-color: #ffffff; border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;
+    display: flex; flex-direction: column; padding: 15px;
+}
+.view-title { font-size: 1rem; font-weight: 600; color: #334155; margin-bottom: 10px; padding-bottom: 5px; border-bottom: 2px solid #f1f5f9; display: flex; align-items: center; }
+.view-title::before { content: ''; display: inline-block; width: 6px; height: 16px; background-color: #10b981; border-radius: 3px; margin-right: 8px; }
+.svg-wrapper { flex-grow: 1; position: relative; width: 100%; height: 100%; min-height: 250px; }
+
+/* --- TABELLA --- */
+#table-view { grid-column: 1 / span 2; grid-row: 3; }
+#table-wrapper { overflow: auto; height: 100%; }
+.sports-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; white-space: nowrap; }
+.sports-table th { background-color: #f8fafc; color: #475569; font-weight: 600; padding: 10px; text-align: left; position: sticky; top: 0; border-bottom: 2px solid #e2e8f0; z-index: 1; }
+.sports-table td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; color: #334155; }
+.sports-table tr:nth-child(even) { background-color: #f8fafc; }
+.sports-table tr:hover { background-color: #e0f2fe; }
+.empty-state { color: #64748b; font-style: italic; text-align: center; padding-top: 20px; }
+
+/* --- TOOLTIP --- */
+.sports-tooltip { position: absolute; padding: 10px; font-size: 0.8rem; background: #1e293b; border-radius: 8px; color: #f8fafc; pointer-events: none; opacity: 0; z-index: 1000; transition: opacity 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+.sports-tooltip span { color: #10b981; font-weight: bold; }

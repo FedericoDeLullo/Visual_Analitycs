@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Football Scout Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pca-js@1.0.0/pca.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div id="top-bar">
+        <div class="title">
+            <span class="icon">⚽</span> Scout Analytics Pro
+        </div>
+        <div class="controls">
+            <button id="btn-zoom" class="active">🔍 Naviga Mappe</button>
+            <button id="btn-lasso">✍️ Selezione Lazo</button>
+            <button id="btn-reset" class="btn-danger">✖ Reset Generale</button>
+        </div>
+    </div>
+
+    <div id="app-container">
+        <aside id="sidebar">
+            <h3 class="sidebar-title">Filtri di Ricerca</h3>
+            
+            <div class="filter-group">
+                <label>Età Massima: <span id="age-val">25</span> anni</label>
+                <input type="range" id="filter-age" class="filter-input" min="16" max="25" value="25">
+            </div>
+
+            <div class="filter-group">
+                <label>Ruolo in Campo</label>
+                <select id="filter-role" class="filter-input">
+                    <option value="All">Tutti i Ruoli</option>
+                    <optgroup label="Macro Aree">
+                        <option value="MACRO_ATT">Attaccanti (Qualsiasi)</option>
+                        <option value="MACRO_MID">Centrocampisti (Qualsiasi)</option>
+                        <option value="MACRO_DEF">Difensori (Qualsiasi)</option>
+                    </optgroup>
+                    <optgroup label="Attacco Specifico">
+                        <option value="ST">ST - Punta Centrale</option>
+                        <option value="RW">RW - Ala Destra</option>
+                        <option value="LW">LW - Ala Sinistra</option>
+                        <option value="CF">CF - Falso Nueve</option>
+                    </optgroup>
+                    <optgroup label="Centrocampo Specifico">
+                        <option value="CAM">CAM - Trequartista</option>
+                        <option value="CM">CM - Centrale</option>
+                        <option value="CDM">CDM - Mediano</option>
+                        <option value="RM">RM - Esterno Destro</option>
+                        <option value="LM">LM - Esterno Sinistro</option>
+                    </optgroup>
+                    <optgroup label="Difesa Specifica">
+                        <option value="CB">CB - Centrale</option>
+                        <option value="RB">RB - Terzino Destro</option>
+                        <option value="LB">LB - Terzino Sinistro</option>
+                        <option value="RWB">RWB - Fluidificante Destro</option>
+                        <option value="LWB">LWB - Fluidificante Sinistro</option>
+                    </optgroup>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Piede Preferito</label>
+                <select id="filter-foot" class="filter-input">
+                    <option value="All">Indifferente</option>
+                    <option value="Right">Destro</option>
+                    <option value="Left">Sinistro</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Valore di Mercato (€)</label>
+                <div class="min-max-inputs">
+                    <input type="number" id="filter-val-min" class="filter-input" placeholder="Min (es. 0)">
+                    <input type="number" id="filter-val-max" class="filter-input" placeholder="Max (es. 5000000)">
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label>Stipendio Settimanale (€)</label>
+                <div class="min-max-inputs">
+                    <input type="number" id="filter-wage-min" class="filter-input" placeholder="Min (es. 0)">
+                    <input type="number" id="filter-wage-max" class="filter-input" placeholder="Max (es. 20000)">
+                </div>
+            </div>
+            
+            <button id="btn-apply-filters" class="btn-apply">Applica Filtri</button>
+        </aside>
+
+        <main id="dashboard">
+            <div class="view-container" id="pca-view">
+                <h3 class="view-title">Mappa dei Talenti (PCA)</h3>
+                <div class="svg-wrapper" id="svg-pca"></div>
+            </div>
+            <div class="view-container" id="radar-view">
+                <h3 class="view-title">Profilo Tecnico Medio</h3>
+                <div class="svg-wrapper" id="svg-radar"></div>
+            </div>
+            <div class="view-container" id="eco-view">
+                <h3 class="view-title">Analisi Economica (Value vs Wage)</h3>
+                <div class="svg-wrapper" id="svg-eco"></div>
+            </div>
+            <div class="view-container" id="bar-view">
+                <h3 class="view-title">Trend di Crescita (Età vs Potenziale)</h3>
+                <div class="svg-wrapper" id="svg-bar"></div>
+            </div>
+            <div class="view-container" id="table-view">
+                <h3 class="view-title">Database Giocatori Selezionati</h3>
+                <div id="table-wrapper">
+                    <div class="empty-state">Usa lo strumento di selezione sui grafici per analizzare i giocatori.</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
