@@ -1,99 +1,186 @@
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
 
 body {
-    min-height: 100vh;
-    background-color: #f0f2f5;
-    color: #1e293b;
+    background-color: #0f172a;
+    color: #f8fafc;
+    display: flex;
+    height: 100vh;
+    overflow: hidden; /* Blocca lo scroll dell'intera pagina */
+}
+
+/* --- BOTTONE TOGGLE FILTRI E OVERLAY --- */
+.filter-toggle-btn {
+    position: fixed; top: 15px; left: 15px; z-index: 900;
+    background-color: #0ea5e9; color: white; border: none; padding: 10px 20px;
+    border-radius: 8px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    transition: 0.2s;
+}
+.filter-toggle-btn:hover { background-color: #0284c7; transform: translateY(-2px); }
+
+#sidebar-overlay {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(3px);
+    z-index: 998; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+}
+#sidebar-overlay.active { opacity: 1; pointer-events: all; }
+
+/* --- SIDEBAR FILTRI A SCOMPARSA --- */
+#sidebar {
+    position: fixed; top: 0; left: 0; height: 100vh; width: 320px;
+    background-color: #1e293b; border-right: 1px solid #334155;
+    padding: 25px 20px; overflow-y: auto; z-index: 999;
+    box-shadow: 5px 0 20px rgba(0,0,0,0.5);
+    transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex; flex-direction: column; gap: 20px;
+}
+#sidebar.open { transform: translateX(0); }
+
+.sidebar-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #334155; padding-bottom: 10px; }
+.sidebar-title { font-size: 1.4rem; color: #38bdf8; font-weight: 700; }
+.close-btn { background: none; border: none; color: #94a3b8; font-size: 1.2rem; cursor: pointer; }
+.close-btn:hover { color: #f8fafc; }
+
+.filter-group label { display: block; font-size: 0.85rem; font-weight: 600; color: #94a3b8; margin-bottom: 8px; }
+.highlight { color: #38bdf8; font-weight: bold; }
+.filter-input { width: 100%; padding: 10px; background-color: #0f172a; color: #f8fafc; border: 1px solid #334155; border-radius: 6px; }
+.filter-input:focus { outline: none; border-color: #38bdf8; }
+.min-max-inputs { display: flex; gap: 10px; }
+.btn-apply { width: 100%; padding: 12px; background-color: #0ea5e9; color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; margin-top: 10px; }
+.btn-apply:hover { background-color: #0284c7; }
+
+/* --- DASHBOARD PRINCIPALE --- */
+#dashboard { 
+    padding: 60px 15px 15px 15px; /* Spazio top per il bottone filtri */
+    height: 100vh; /* Tutta l'altezza dello schermo */
+    width: 100%;
+    display: flex; 
+    flex-direction: column; 
+}
+
+.dashboard-header { 
+    background-color: #1e293b; 
+    padding: 10px; 
+    border-radius: 12px; 
+    margin-bottom: 12px; 
+    border: 1px solid #334155; 
+    flex-shrink: 0; /* Impedisce che la legenda si schiacci */
+}
+
+/* --- LEGENDA ORIZZONTALE (Ecco la parte che mancava!) --- */
+.legend-horizontal { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: #cbd5e1; }
+.legend-color { width: 12px; height: 12px; border-radius: 50%; }
+
+/* --- LA NUOVA GRIGLIA A SCHERMO SINGOLO --- */
+.dashboard-grid { 
+    display: grid; 
+    grid-template-columns: repeat(4, 1fr); /* 4 colonne perfette */
+    grid-template-rows: 1.2fr 1fr; /* 2 righe: quella sopra un po' più alta */
+    gap: 15px; 
+    flex-grow: 1; /* Si espande per occupare tutto lo schermo rimanente */
+    min-height: 0; /* Fondamentale per contenere i grafici */
+}
+
+/* Assegnazione dinamica degli spazi */
+#pca-view { grid-column: span 2; }
+#eco-view { grid-column: span 2; }
+#radar-view { grid-column: span 1; }
+#bar-view { grid-column: span 1; }
+#table-view { grid-column: span 2; }
+
+.view-container { 
+    background-color: #1e293b; 
+    border-radius: 12px; 
+    border: 1px solid #334155; 
+    padding: 12px; 
+    display: flex; 
+    flex-direction: column; 
+    height: 100%; /* Si adatta perfettamente alla sua cella della griglia */
+    min-height: 0;
+}
+
+.view-title { 
+    font-size: 0.95rem; 
+    font-weight: 600; 
+    color: #e2e8f0; 
+    margin-bottom: 8px; 
+    padding-bottom: 6px; 
+    border-bottom: 1px solid #334155; 
+    flex-shrink: 0; 
+}
+.view-title::before { content: ''; display: inline-block; width: 6px; height: 16px; background-color: #38bdf8; border-radius: 3px; margin-right: 8px; }
+
+/* Adattamento dinamico dei grafici D3.js */
+.svg-wrapper { 
+    flex-grow: 1; /* D3 leggerà questo spazio per calcolare larghezza e altezza */
+    width: 100%; 
+    height: 100%; 
+    position: relative; 
+    min-height: 0; 
+}
+
+#svg-pca, #svg-eco, #svg-radar, #svg-bar { 
+    height: 100%; 
+}
+
+/* --- MENU FLOTTANTE TRASCINABILE --- */
+#floating-menu { 
+    position: fixed; 
+    bottom: 30px; 
+    right: 30px; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    gap: 12px; 
+    z-index: 1000; 
+}
+
+.fab-actions {
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* Blocchiamo lo scroll del body, scrollano solo i riquadri! */
+    gap: 10px;
+    opacity: 0; /* Invisibili di default */
+    transform: translateY(20px) scale(0.5); /* Schiacciati in basso */
+    pointer-events: none; /* Non cliccabili se nascosti */
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Effetto rimbalzo */
 }
 
-/* --- TOP BAR --- */
-#top-bar {
-    height: 70px;
-    background-color: #1e293b; 
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 30px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-    z-index: 10;
+/* Quando il menu riceve la classe 'open' da JS */
+#floating-menu.open .fab-actions {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: all;
 }
-.title { font-size: 1.4rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
-.controls { display: flex; gap: 12px; }
-.controls button {
-    padding: 8px 16px; border: 1px solid #475569; border-radius: 6px;
-    background-color: #334155; color: white; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.2s;
-}
-.controls button:hover { background-color: #475569; }
-.controls button.active { background-color: #10b981; border-color: #10b981; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4); }
-.controls button.btn-danger { background-color: transparent; border-color: #ef4444; color: #ef4444; }
-.controls button.btn-danger:hover { background-color: #ef4444; color: white; }
 
-/* --- APP CONTAINER (Sidebar + Dashboard) --- */
-#app-container {
-    display: flex;
+.fab-btn { 
+    width: 45px; height: 45px; border-radius: 50%; border: none; 
+    background-color: #334155; color: white; font-size: 1.1rem; 
+    cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.5); transition: 0.2s; 
+}
+.fab-btn:hover { background-color: #475569; transform: scale(1.1); }
+.fab-btn.active { background-color: #38bdf8; box-shadow: 0 0 15px rgba(56, 189, 248, 0.5); color: #0f172a; }
+.fab-btn.btn-danger { background-color: #ef4444; }
+
+/* Stile speciale per il bottone Padre */
+.main-fab {
+    width: 60px; height: 60px; font-size: 1.5rem; background-color: #0ea5e9;
+    cursor: grab; /* Cursore a forma di manina per indicare che si può spostare */
+    z-index: 2;
+}
+.main-fab:active { cursor: grabbing; background-color: #0284c7; }
+
+/* --- TABELLA E TOOLTIP --- */
+#table-wrapper { 
     flex-grow: 1;
-    height: calc(100vh - 70px);
+    overflow-y: auto; /* Solo i giocatori scorrono, il resto del sito no! */
+    min-height: 0;
+    height: 100%;
 }
-
-/* --- SIDEBAR FILTRI --- */
-#sidebar {
-    width: 280px;
-    background-color: #ffffff;
-    border-right: 1px solid #e2e8f0;
-    padding: 20px;
-    overflow-y: auto;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.02);
-}
-.sidebar-title { font-size: 1.1rem; color: #0f172a; margin-bottom: 20px; border-bottom: 2px solid #10b981; padding-bottom: 10px; }
-.filter-group { margin-bottom: 20px; }
-.filter-group label { display: block; font-size: 0.85rem; font-weight: 600; color: #475569; margin-bottom: 8px; }
-.filter-input { width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.9rem; }
-.filter-input:focus { outline: none; border-color: #3b82f6; }
-.min-max-inputs { display: flex; gap: 10px; }
-.btn-apply {
-    width: 100%; padding: 10px; background-color: #3b82f6; color: white; border: none; border-radius: 6px;
-    font-weight: 600; cursor: pointer; transition: 0.2s; margin-top: 10px;
-}
-.btn-apply:hover { background-color: #2563eb; }
-
-/* --- GRIGLIA DASHBOARD --- */
-#dashboard {
-    flex-grow: 1;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr 250px; /* Altezze bilanciate */
-    gap: 15px;
-    padding: 15px;
-    overflow-y: auto; /* Permette alla griglia di scorrere verso il basso */
-}
-.view-container {
-    background-color: #ffffff; border-radius: 12px;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;
-    display: flex; flex-direction: column; padding: 15px;
-}
-.view-title { font-size: 1rem; font-weight: 600; color: #334155; margin-bottom: 10px; padding-bottom: 5px; border-bottom: 2px solid #f1f5f9; display: flex; align-items: center; }
-.view-title::before { content: ''; display: inline-block; width: 6px; height: 16px; background-color: #10b981; border-radius: 3px; margin-right: 8px; }
-.svg-wrapper { flex-grow: 1; position: relative; width: 100%; height: 100%; min-height: 250px; }
-
-/* --- TABELLA --- */
-#table-view { grid-column: 1 / span 2; grid-row: 3; }
-#table-wrapper { overflow: auto; height: 100%; }
 .sports-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; white-space: nowrap; }
-.sports-table th { background-color: #f8fafc; color: #475569; font-weight: 600; padding: 10px; text-align: left; position: sticky; top: 0; border-bottom: 2px solid #e2e8f0; z-index: 1; }
-.sports-table td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; color: #334155; }
-.sports-table tr:nth-child(even) { background-color: #f8fafc; }
-.sports-table tr:hover { background-color: #e0f2fe; }
-.empty-state { color: #64748b; font-style: italic; text-align: center; padding-top: 20px; }
+.sports-table th { background-color: #0f172a; color: #94a3b8; padding: 12px; text-align: left; position: sticky; top: 0; z-index: 1; border-bottom: 2px solid #334155;}
+.sports-table td { padding: 10px 12px; border-bottom: 1px solid #334155; }
+.sports-table tr:hover { background-color: #334155; }
+.empty-state { color: #64748b; font-style: italic; text-align: center; padding: 20px; }
 
-/* --- TOOLTIP --- */
-.sports-tooltip { position: absolute; padding: 10px; font-size: 0.8rem; background: #1e293b; border-radius: 8px; color: #f8fafc; pointer-events: none; opacity: 0; z-index: 1000; transition: opacity 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
-.sports-tooltip span { color: #10b981; font-weight: bold; }
-/* --- LEGENDA COLORI SIDEBAR --- */
-.legend-box { margin-top: 25px; padding-top: 20px; border-top: 2px solid #f1f5f9; }
-.legend-box h4 { font-size: 0.95rem; color: #334155; margin-bottom: 12px; }
-.legend-item { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 0.85rem; color: #475569; }
-.legend-color { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; border: 1px solid rgba(0,0,0,0.1); }
+.sports-tooltip { position: absolute; padding: 12px; font-size: 0.85rem; background: rgba(15, 23, 42, 0.95); border: 1px solid #334155; border-radius: 8px; color: #f8fafc; pointer-events: none; opacity: 0; z-index: 1000; box-shadow: 0 8px 16px rgba(0,0,0,0.5); }
+.sports-tooltip span { color: #38bdf8; font-weight: 700; }
