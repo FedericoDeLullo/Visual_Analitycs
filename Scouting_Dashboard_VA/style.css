@@ -92,3 +92,8 @@ body {
 /* --- TOOLTIP --- */
 .sports-tooltip { position: absolute; padding: 10px; font-size: 0.8rem; background: #1e293b; border-radius: 8px; color: #f8fafc; pointer-events: none; opacity: 0; z-index: 1000; transition: opacity 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
 .sports-tooltip span { color: #10b981; font-weight: bold; }
+/* --- LEGENDA COLORI SIDEBAR --- */
+.legend-box { margin-top: 25px; padding-top: 20px; border-top: 2px solid #f1f5f9; }
+.legend-box h4 { font-size: 0.95rem; color: #334155; margin-bottom: 12px; }
+.legend-item { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 0.85rem; color: #475569; }
+.legend-color { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; border: 1px solid rgba(0,0,0,0.1); }

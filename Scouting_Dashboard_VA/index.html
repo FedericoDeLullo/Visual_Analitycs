@@ -62,7 +62,18 @@
                     </optgroup>
                 </select>
             </div>
-
+            <div class="filter-group">
+                <label>Campionato</label>
+                <select id="filter-league" class="filter-input">
+                    <option value="All">Tutti i Campionati</option>
+                    </select>
+            </div>
+            <div class="filter-group">
+                <label>Nazionalità (English)</label>
+                <select id="filter-nationality" class="filter-input">
+                    <option value="All">Tutte le Nazionalità</option>
+                    </select>
+            </div>
             <div class="filter-group">
                 <label>Piede Preferito</label>
                 <select id="filter-foot" class="filter-input">
@@ -88,7 +99,12 @@
                 </div>
             </div>
             
-            <button id="btn-apply-filters" class="btn-apply">Applica Filtri</button>
+           <button id="btn-apply-filters" class="btn-apply">Applica Filtri</button>
+
+            <div class="legend-box">
+                <h4>Legenda Colori</h4>
+                <div id="league-legend"></div>
+            </div>
         </aside>
 
         <main id="dashboard">
